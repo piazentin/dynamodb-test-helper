@@ -12,13 +12,15 @@ repositories {
 }
 
 group = "com.piazentin"
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("reflect"))
 
     implementation("software.amazon.awssdk:dynamodb:2.5.1")
     implementation("com.amazonaws:DynamoDBLocal:1.11.119")

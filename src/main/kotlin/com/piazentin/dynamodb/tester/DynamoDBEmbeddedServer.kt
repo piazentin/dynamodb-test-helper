@@ -9,7 +9,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import java.io.File
 
-class DynamoDBEmbeddedServer(val port: String,
+class DynamoDBEmbeddedServer(val port: Int,
                              client: DynamoDbAsyncClient? = null,
                              schemasDir: String? = null) : AutoCloseable {
 
@@ -19,24 +19,25 @@ class DynamoDBEmbeddedServer(val port: String,
     init {
 
         // see https://bitbucket.org/almworks/sqlite4java/wiki/UsingWithMavens
-        SQLite.setLibraryPath("sqlite-libs")
-        server = ServerRunner.createServerFromCommandLineArgs(arrayOf("-inMemory", "-port", port))
+        val uri = Thread.currentThread().contextClassLoader.getResource("sqlite-libs").toURI()
+        SQLite.setLibraryPath(uri.path)
+        server = ServerRunner.createServerFromCommandLineArgs(arrayOf("-inMemory", "-port", port.toString()))
         server.start()
 
-        if (client != null && schemasDir != null && schemasDir.dirExists()) {
+        val schemas = schemasDir?.toFile()
+        if (client != null && schemas != null && schemas.isDirectory) {
 
-            createTables(client, schemasDir)
+            createTables(client, schemas)
         }
     }
 
     override fun close() = server.stop()
 
-    private fun String.dirExists() = File(this).let { it.exists() && it.isDirectory }
+    private fun String.toFile() = File(Thread.currentThread().contextClassLoader.getResource(this).toURI())
 
-    private fun createTables(client: DynamoDbAsyncClient, schemasDirName: String) {
+    private fun createTables(client: DynamoDbAsyncClient, schemas: File) {
 
-        val schemasDir = File(schemasDirName)
-        val createTableRequests = schemasDir.walk()
+        val createTableRequests = schemas.walk()
                 .filter { it.name.endsWith(".schema.json") }
                 .map {
                     ObjectMapper()
