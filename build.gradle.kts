@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm") version "1.3.21"
     `java-library`
@@ -12,10 +14,11 @@ repositories {
 }
 
 group = "com.piazentin"
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+version = "0.1.0"
+tasks.withType(KotlinCompile::class.java).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -38,3 +41,10 @@ dependencies {
 val test by tasks.getting(Test::class) {
     useJUnit()
 }
+
+// // To generate fatJar
+//tasks.withType<Jar> {
+//    configurations["compileClasspath"].forEach { file: File ->
+//        if (file.extension.endsWith("jar")) from(zipTree(file.absoluteFile))
+//    }
+//}
