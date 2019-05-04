@@ -1,6 +1,7 @@
 package com.piazentin.dynamodb.tester
 
 import com.almworks.sqlite4java.SQLite
+import com.almworks.sqlite4java.SQLiteException
 import com.amazonaws.services.dynamodbv2.local.main.ServerRunner
 import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer
 import com.fasterxml.jackson.databind.MapperFeature
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import java.io.File
+import java.nio.file.Paths
 
 class DynamoDBEmbeddedServer(val port: Int,
                              client: DynamoDbAsyncClient? = null,
@@ -18,9 +20,7 @@ class DynamoDBEmbeddedServer(val port: Int,
 
     init {
 
-        // see https://bitbucket.org/almworks/sqlite4java/wiki/UsingWithMavens
-        val uri = Thread.currentThread().contextClassLoader.getResource("sqlite-libs").toURI()
-        SQLite.setLibraryPath(uri.path)
+        SQLiteHelper.loadLibrary()
         server = ServerRunner.createServerFromCommandLineArgs(arrayOf("-inMemory", "-port", port.toString()))
         server.start()
 
