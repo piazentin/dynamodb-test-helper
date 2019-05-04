@@ -39,7 +39,10 @@ internal object SQLiteHelper {
     private fun loadFromJar(resource: String) {
 
         val file = File.createTempFile("temp", resolveLibName())
-        val libBytes = Thread.currentThread().contextClassLoader.getResourceAsStream(resource).readAllBytes()
+        val libBytes = with(Thread.currentThread().contextClassLoader.getResourceAsStream(resource)) {
+            this.readBytes()
+        }
+
         file.writeBytes(libBytes)
         file.deleteOnExit()
         file.absolutePath
