@@ -4,7 +4,7 @@ Provides simple to integrate Embedded DynamoDB testing tools
 
 [![](https://jitpack.io/v/piazentin/dynamodb-test-helper.svg)](https://jitpack.io/#piazentin/dynamodb-test-helper)
 
-For a working example see [the testing class in Kotlin Test](blob/master/src/test/kotlin/com/piazentin/dynamodb/tester/DynamoDBEmbeddedServerTest.kt)
+For a working example see [the testing class in Kotlin Test](/src/test/kotlin/com/piazentin/dynamodb/tester/DynamoDBEmbeddedServerTest.kt)
 
 ## How to use
 
